@@ -1,0 +1,14 @@
+{% extends 'admin/change_list.html' %}
+{% block extrahead %}
+    <script type="text/javascript">
+    window.onload=function(){
+        var all_cover = document.getElementsByClassName('field-origin_url');
+        for(var i=0;i<all_cover.length;i++){
+            var cover_url = all_cover[i].innerHTML;
+            all_cover[i].innerHTML = "<img src='http://ali.superlin.cc:9999/img/douban?url="+ cover_url+ "'>";
+        }
+    }
+    </script>
+{% endblock %}
+
+

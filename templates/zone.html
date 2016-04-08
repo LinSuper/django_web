@@ -1,0 +1,106 @@
+{% extends 'base.html' %}
+{% block script_file %}
+    <script src="http://files-10015041.file.myqcloud.com/static/src/js/components/notify.js"></script>
+    <script type="text/javascript" src="http://files-10015041.file.myqcloud.com/static/src/cos-js-sdk/qcloud_sdk.js"></script>
+	<script type="text/javascript" src="http://files-10015041.file.myqcloud.com/static/src/cos-js-sdk/swfobject.js"></script>
+    <script src="http://files-10015041.file.myqcloud.com/static/src/js/components/pagination.js"></script>
+{% endblock %}
+{% block mid_content %}
+<div class="uk-width-medium-1-1">
+      <p class="uk-text-large">分享出你手里的图吧0.0 <a href="#my-modal" class="uk-button uk-button-primary" data-uk-modal>上传图片</a></p>
+
+    <div class="uk-modal" id="my-modal">
+    <div class="uk-modal-dialog">
+        <div class="uk-modal-header">上传图片</div>
+        <div class="uk-margin-small-top uk-modal-content uk-form">
+            <p>标题</p>
+            <p><input type="text" class="uk-width-1-1" id="title" placeholder="标题可为空"></p>
+            <p id="image"></p>
+            <button type="button" class="uk-button uk-button-primary" onclick="upload_img()">选择本地图片</button>
+        </div>
+        <div class="uk-modal-footer uk-text-right">
+            <button type="button" class="uk-button uk-modal-close">取消</button>
+            <button type="button" class="uk-button uk-button-primary" onclick="upload_api()">发表</button>
+        </div>
+    </div>
+    </div>
+      <div class="uk-gird" data-uk-grid-margin>
+          <input  id="file" type="file" accept="image/gif,image/jpeg,image/png,image/jpg" style="display:none;"/>
+          <div id="all_article_box">
+
+              {% for i in data %}
+                  <article class="uk-article">
+                <h3 class="uk-article-title">{{ i.title }}</h3>
+                <p class="uk-article-meta">
+                    {{ i.create_time }}
+                </p>
+                    <img src="{{ i.content }}" class="uk-thumbnail-large">
+                </article>
+              {% endfor %}
+            </div>
+      </div>
+    <ul class="uk-pagination" data-uk-pagination="{items:{{ item_count }}, itemsOnPage:5, currentPage:{{ current_page }}}"></ul>
+
+</div>
+{% endblock %}
+{% block script %}
+    <script>
+    var bucketName = "image/kantujun";
+    var cos = new CosCloud("10015041", '/img/sign');
+    var modal = UIkit.modal("#my-modal");
+    function upload_img(){
+        $('#file').click();
+    }
+    $(document).on('change', '#file', function(e){
+              var successCallBack = function(result){
+          			var file_url = $.parseJSON(result).data.access_url;
+                    $('#image').empty();
+                    $('#image').append($('<img>').attr('src',file_url));
+          		};
+
+          		var errorCallBack = function(result){
+          			alert(result);
+          		};
+              var files = document.getElementById("file").files;
+              var file_type  = files[0].name.split('.')[1];
+             if(files && files.length == 1){
+                cos.uploadFile(successCallBack, errorCallBack, bucketName, file_type, files[0]);
+             }
+             else{
+                alert("请选择一个文件");
+             }
+            });
+    function upload_api(){
+        if($('#image')[0].children.length==0){
+            alert('请选择一张图片');
+            return
+        }
+        var title = $('#title').val();
+        if(title>=15){
+            alert("标题长度不对，应小于15个字符（可为空）");
+            return
+        }
+        var image_url = $('#image')[0].children[0].src;
+        $.ajax({
+            url: '/api/upload_api',
+            type: 'POST',
+            data: {'title': title, 'content': image_url, 'csrfmiddlewaretoken':'{{ csrf_token }}' },
+            success: function (data){
+                UIkit.notify(data.message, {timeout: 2000});
+                if(data.stat==1){
+                    var title = $('#title').val('');
+                    $('#image').empty();
+                    modal.hide();
+                    window.location.href='/zone';
+                }
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                alert('服务器忙，请重试！' + errorThrown);
+            }
+        })
+    }
+    $('[data-uk-pagination]').on('select.uk.pagination', function(e, pageIndex){
+            window.location.href = '/zone/' + (pageIndex+1);
+            });
+    </script>
+{% endblock %}

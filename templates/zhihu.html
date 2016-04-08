@@ -1,0 +1,195 @@
+{% extends "base.html" %}
+{% block script_file %}
+     <script src="http://files-10015041.file.myqcloud.com/static/src/js/components/notify.js"></script>
+    <script src="http://files-10015041.file.myqcloud.com/static/src/js/components/pagination.js"></script>
+    <script src="http://f.919cp.com/cpf.php?445__1" charset="utf-8"></script>
+{% endblock %}
+{% block mid_content %}
+    <div class="uk-width-medium-1-1" xmlns="http://www.w3.org/1999/html">
+    <div class="uk-form">
+    <input type="text" placeholder="输入知乎问题或者收藏夹的完整链接" class="uk-form-width-large" id="insert_url">
+    <a onclick="insert_url();return;" class="uk-button">提交</a>
+    </div>
+      <p class="uk-text-large">知乎看图
+          <a href="/index/zone">新版块：捡图</a>
+          <a href="/index/search">关键词搜索</a>
+      </p>
+      <div class="uk-gird" data-uk-grid-margin>
+        <ul class="uk-subnav uk-subnav-pill" data-uk-switcher="{connect:'#switcher-content'}">
+            <li class="uk-active" aria-expanded="true"><a href="#">问题</a></li>
+            <li aria-expanded="false" class=""><a href="#">收藏夹</a></li>
+            <li aria-expanded="false" class=""><a href="#">用户</a></li>
+        </ul>
+
+        <ul id="switcher-content" class="uk-switcher">
+
+            <li class="uk-active" aria-hidden="false">
+                <div class="uk-width-medium-1-1">
+                <div class="uk-container uk-container-center" id="question">
+                <div class="uk-alert" data-uk-alert>
+                    <a href="" class="uk-alert-close uk-close"></a>
+                    <p>点击标题可以查看全部图片哟</p>
+                </div>
+                    {% for i in question_data %}
+                        {% set index_1 = loop.index %}
+                        <div class="uk-grid" data-uk-grid-margin>
+                        <div class="uk-width-medium-1-1">
+                        <p class="uk-text-large"><a href="{{ i.url }}" target="_blank">{{ i.title }}</a></p>
+                        </div>
+                        </div>
+                        <div class="uk-grid" data-uk-grid-margin>
+                        {% for j in i.image %}
+                            {% set index_2 = loop.index %}
+                        <div class="uk-width-medium-1-5">
+                            <img src="{{ j }}">
+                        </div>
+                        {% endfor %}
+                        </div>
+                    {% endfor %}
+
+                </div>
+                <ul class="uk-pagination" id="pagination_1" data-uk-pagination="{items:{{ question_count }}, itemsOnPage:5}">
+
+                </ul>
+                </div>
+{#                <ul class="uk-pagination" id="page_0"></ul>#}
+            </li>
+
+
+            <li aria-hidden="true" class="">
+                <div class="uk-width-medium-1-1">
+                <div class="uk-container uk-container-center" id="collection">
+                    {% for i in collection_data %}
+                        {% set index_1 = loop.index %}
+                        <div class="uk-grid" data-uk-grid-margin>
+                        <div class="uk-width-medium-1-1">
+                        <p class="uk-text-large"><a href="{{ i.url }}" target="_blank">{{ i.title }}</a></p>
+                        </div>
+                        </div>
+                        <div class="uk-grid" data-uk-grid-margin>
+                        {% for j in i.image %}
+                            {% set index_2 = loop.index %}
+                        <div class="uk-width-medium-1-5">
+                            <img src="{{ j }}">
+                        </div>
+                        {% endfor %}
+                        </div>
+                    {% endfor %}
+
+                </div>
+                <ul class="uk-pagination" id="pagination_2" data-uk-pagination="{items:{{ collection_count }}, itemsOnPage:5}">
+
+                </ul>
+                </div>
+            </li>
+
+            <li aria-hidden="true" class="">
+                <div id="user"></div>
+{#                <ul class="uk-pagination" id="page_2"></ul>#}
+            </li>
+        </ul>
+      </div>
+
+    </div>
+{% endblock %}
+{% block script %}
+    <script>
+    function update_item(index){
+        var all_li = $('.uk-subnav-pill')[0].children;
+        for(var i =0;i<all_li.length;i++){
+            var current_li = all_li[i];
+            if(current_li.attributes['class'].value=="uk-active"){
+                if(i==0){
+                    UIkit.notify("加载中...", {timeout: 2000});
+                        $.ajax({
+                            url: '/index/api/get_more?type=1&start=' + (index-1)*5 + '&end=' + (index*5),
+                            type: "GET",
+                            success: function (data) {
+                                $('#question').empty();
+                                for (var j = 0; j < data.data.length; j++) {
+                                    var c_data = data.data[j];
+                                    var new_div = $('<div class="uk-grid" data-uk-grid-margin></div>');
+                                    var title_div = $('<div class="uk-width-medium-1-1"></div>').append(
+                                            $('<p class="uk-text-large"></p>').append($('<a></a>').attr('href', c_data.url).text(c_data.title))
+                                    );
+                                    var image_div = $('<div class="uk-grid" data-uk-grid-margin></div>');
+                                    for (var z = 0; z < c_data.image.length; z++) {
+                                        var next_div = $('<div class="uk-width-medium-1-5"></div>').append($('<img src="' + c_data.image[z] + '">').attr('width', 250).attr('height', 100));
+                                        image_div.append(next_div);
+                                    }
+                                    $('#question').append(title_div);
+                                    $('#question').append(image_div);
+                                }
+                                question_status = 0;
+                            },
+                            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                                question_status = 0;
+                                alert('服务器忙，请重试！' + errorThrown);
+                            }
+                        });
+                }
+                if(i==1){
+                    UIkit.notify("加载中...", {timeout: 2000});
+
+                        $.ajax({
+                            url: '/index/api/get_more?type=0&start=' + (index-1)*5 + '&end=' + (index*5),
+                            type: "GET",
+                            success: function (data) {
+                                $('#collection').empty();
+                                for (var j = 0; j < data.data.length; j++) {
+                                    var c_data = data.data[j];
+                                    var new_div = $('<div class="uk-grid" data-uk-grid-margin></div>');
+                                    var title_div = $('<div class="uk-width-medium-1-1"></div>').append(
+                                            $('<p class="uk-text-large"></p>').append($('<a></a>').attr('href', c_data.url).text(c_data.title))
+                                    );
+                                    var image_div = $('<div class="uk-grid" data-uk-grid-margin></div>');
+                                    for (var z = 0; z < c_data.image.length; z++) {
+                                        var next_div = $('<div class="uk-width-medium-1-5"></div>').append($('<img src="' + c_data.image[z] + '">').attr('width', 250).attr('height', 100));
+                                        image_div.append(next_div);
+                                    }
+                                    $('#collection').append(title_div);
+                                    $('#collection').append(image_div);
+                                }
+                            },
+                            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                                alert('服务器忙，请重试！' + errorThrown);
+                            }
+                        });
+                }
+            }
+        }
+
+    }
+
+
+    $('[data-uk-pagination]').on('select.uk.pagination', function(e, pageIndex){
+        update_item(pageIndex+1);
+    });
+    function insert_url(){
+        var url = $('#insert_url').val();
+        if(url.length==0){
+            return
+        }
+        $.ajax({
+            url: '/index/api/zhihu_spider?url='+url,
+            type: "GET",
+            success: function (data) {
+                UIkit.notify(data.message, {timeout: 1500});
+                $('#insert_url').val('');
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                UIkit.notify("服务器忙。。。", {timeout: 1500});
+            }
+
+        });
+    }
+        var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?cfe232834849b14c6eff873a46298a7e";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+
+    </script>
+{% endblock %}

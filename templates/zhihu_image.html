@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en-gb" dir="ltr" xmlns="http://www.w3.org/1999/html">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="baidu-site-verification" content="ztcXRZmYtN" />
+        <meta name="keywords" content="知乎 看图 福利" />
+        <meta name="description" content="一个查看知乎问题回答图片的网站">
+        <title>知乎看图</title>
+        <link rel="stylesheet" href="http://files-10015041.file.myqcloud.com/static/src/css/uikit.gradient.css">
+        <script src="http://files-10015041.file.myqcloud.com/static/src/js/jquery.js"></script>
+        <script src="http://files-10015041.file.myqcloud.com/static/src/js/uikit.js"></script>
+        <script src="http://www.getuikit.net/src/js/components/notify.js"></script>
+        <script src="http://www.getuikit.net/src/js/components/pagination.js"></script>
+        <link id="data-uikit-theme" rel="stylesheet" href="http://files-10015041.file.myqcloud.com/static/src/css/uikit.docs.min.css">
+    </head>
+<body>
+      <nav class="tm-navbar uk-navbar uk-navbar-attached">
+
+          <ul class="uk-navbar-nav">
+            <a class="uk-navbar-brand" href="/">知乎看图</a>
+                  <div class="uk-form uk-navbar-content uk-display-inline-block">
+                    <input type="text" placeholder="Search" id="url">
+                    <button class="uk-button uk-button-primary" onclick="search()">Get!</button>
+                    <a href="#my_dialog" data-uk-modal>留言</a>
+                  </div>
+          </ul>
+      </nav>
+    <div class="uk-container uk-container-center uk-margin-top uk-margin-large-bottom">
+        <!-- <img src="../static/img/process.gif" id="processBar" style="display:none;width:100%;"> -->
+        <div class="uk-margin uk-thumbnail-expand" data-uk-margin="" id="imageList">
+
+        </div>
+          <!-- <ul class="uk-pagination" id="page"></ul> -->
+        <div id="hot_box">
+        <h3 style="text-align:center">热门搜索</h3>
+        <ul class="uk-list uk-list-line" id="hot_items">
+
+        </ul>
+        <div class="uk-pagination-previous" id="previous">
+          <a href="javascript:void(0)" onclick="previous_hot()">
+            <i class="uk-icon-angle-double-left">上一页</i>
+          </a>
+        </div>
+        <div class="uk-pagination-next" id="next">
+          <a href="javascript:void(0)" onclick="next_hot()">
+            <i class="uk-icon-angle-double-right">下一页</i>
+          </a>
+        </div>
+        </div>
+        <div align="center">
+          <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+          <!-- old -->
+          <ins class="adsbygoogle"
+               style="display:inline-block;width:336px;height:280px"
+               data-ad-client="ca-pub-5673866312642362"
+               data-ad-slot="8536906131"></ins>
+          <script>
+          (adsbygoogle = window.adsbygoogle || []).push({});
+          </script>
+        </div>
+        <div align="center">
+          <script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? " https://" : " http://");document.write(unescape("%3Cspan id='cnzz_stat_icon_1257489177'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s11.cnzz.com/z_stat.php%3Fid%3D1257489177' type='text/javascript'%3E%3C/script%3E"));</script>
+        </div>
+    </div>
+    <div id="my_dialog" class="uk-modal">
+      <div class="uk-modal-dialog uk-modal-dialog-large">
+        <a class="uk-modal-close uk-close"></a>
+        <div class="uk-modal-header">
+          <p>
+            如果对本网站有什么建议或者有系统出错，可以在这里反馈给我。最近还在实习，没什么时间写，等过几天放假我会加上一些好玩的功能～
+          </p>
+        </div>
+        <div class="uk-margin-small-top uk-modal-content uk-form">
+          <p><textarea type="text" class="uk-width-1-1" id="content"></textarea></p>
+        </div>
+        <div class="uk-modal-footer uk-text-right">
+          <button class="uk-button uk-button-primary" onclick="send_feedback()">提交</button>
+        </div>
+
+    </div>
+    </div>
+</body>
+<script>
+var i = 0;
+current_start = 0;
+hot_max = 0
+function send_feedback(){
+  var content = $('#content').val();
+  if(content.length<1){
+    alert("你好歹写点东西吧～");
+    return;
+  }
+  var data = {
+    "content": content
+  };
+  $.ajax({
+      url:"/api/send_feedback",
+      type: "POST",
+      data: data,
+      success: function(data){
+          var modal = UIkit.modal("#my_dialog");
+          modal.hide();
+          alert("发送成功！");
+      }
+    });
+}
+function previous_hot(){
+  current_start -= 10;
+  showHotSearch();
+}
+function next_hot(){
+  current_start += 10;
+  showHotSearch();
+}
+function showHotSearch(){
+  var hot_items = $('#hot_items');
+  hot_items.empty();
+  $.ajax({
+    url: "/api/hot_search?start="+current_start+"&end="+(current_start+10),
+    type: "GET",
+    success: function(data){
+      var items = data.result;
+      hot_max = data.count;
+      //hot_items.append('<br>')
+      //hot_items.append('<div class="uk-pagination-previous"><i class="uk-icon-angle-double-left">下一页</i></div>');
+      for (var i = 0; i < items.length; i++){
+        var strHtml = '<a href="javascript:void(0)" onclick="clickSearch(' + "'"+ items[i].url + "')"+'"'+">" + items[i].title + "</a>";
+
+        var newLi = $("<li></li>").append(strHtml);
+        hot_items.append(newLi);
+      }
+      //hot_items.append('<div class="uk-pagination-previous"><i class="uk-icon-angle-double-right">下一页</i></div>');
+      if(current_start==0){
+        $('#previous').hide();
+      }
+      else {
+        $('#previous').show();
+      }
+      if(current_start>=hot_max-10){
+        $('#next').hide();
+      }
+      else {
+        $('#next').show();
+      }
+    }
+  });
+
+}
+function clickSearch(url){
+  $('#url').val(url);
+  search();
+}
+function showImg(url) {
+      var frameid = 'frameimg' + (i++);
+      window[frameid] = '<link id="data-uikit-theme" rel="stylesheet" href="../static/css/uikit.docs.min.css"><img style="width:100%;" id="img" src=\''+url+'\'><script>window.onload = function() { parent.document.getElementById(\''+frameid+'\').height = document.getElementById(\'img\').height+10+\'px\'; }<'+'/script>';
+      tmpIFrame = $('<iframe class="uk-thumbnail" id="'+frameid+'" src="javascript:parent.' + frameid +';" frameBorder="0" scrolling="no" width="100%"></iframe>');
+      $("#imageList").append(tmpIFrame);
+  }
+function select_page(pageIndex){
+  var url= $('#url').val();
+  var start = (pageIndex - 1) * 20;
+  var end = pageIndex * 20;
+  $.ajax({
+      url:'/api/zhihu_spider?url=' + url + '&start=' + start + '&end=' +  end,
+      type: "GET",
+      success: function(data){
+                var page = $('#page');
+                var imageBox = $('#imageList');
+                imageBox.empty();
+                var imageList = data.imageList;
+                for (var i = 0; i < imageList.length; i++) {
+                  var image = imageList[i];
+                  showImg(image);
+                }
+                imageBox.append(page);
+                $('#page').on('select.uk.pagination', function(e, pageIndex){
+                    select_page(pageIndex + 1);
+                });
+                var pagination = UIkit.pagination($('#page'), {items:data.count, itemsOnPage:20,currentPage:pageIndex-1});
+          },
+      error: function(XMLHttpRequest, textStatus, errorThrown)
+      {
+          alert('服务器忙，请重试！' + errorThrown);
+      }
+  });
+  UIkit.notify("加载中，请耐心等候",{timeout:1000});
+}
+  function search(){
+    var url= $('#url').val();
+    $.ajax({
+        url:"/api/zhihu_spider?url=" + url,
+        type: "GET",
+        success: function(data){
+                  var imageBox = $('#imageList');
+                  imageBox.empty();
+                  var imageList = data.imageList;
+                  alert("找到"+ data.count +"张图片");
+                  for (var i = 0; i < imageList.length; i++) {
+                    var image = imageList[i];
+                    showImg(image);
+                  }
+                  imageBox.append('<ul class="uk-pagination" id="page"></ul>');
+                  $('#page').on('select.uk.pagination', function(e, pageIndex){
+                      select_page(pageIndex + 1);
+                  });
+                  var pagination = UIkit.pagination($('#page'), {items:data.count, itemsOnPage:20});
+            },
+        error: function(XMLHttpRequest, textStatus, errorThrown)
+        {
+            alert('链接格式有误或者服务器忙，请重试！' + errorThrown);
+        }
+    });
+    UIkit.notify("搜索中，请耐心等候",{timeout:2000});
+  }
+  $(document).ready(function(){
+    showHotSearch();
+
+  })
+
+</script>
+</html>

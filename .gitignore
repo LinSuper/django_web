@@ -1,0 +1,5 @@
+tranfer_data.py
+api/config/__init__.py
+.idea/
+*.pyc
+*.py~
