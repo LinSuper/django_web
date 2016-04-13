@@ -23,9 +23,9 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = '_6fei600u*argg@ui6yuv)-o1g7_(1xpf-4nljuv5fztb8%j!t'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['localhost','www.superlin.cc','kantu.superlin.cc','www.kantujun.com','www.yz5a.com']
 
 
 # Application definition
