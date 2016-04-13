@@ -7,7 +7,7 @@
         {% for i in data %}
 
             <article class="uk-article">
-            <h1 class="uk-article-title"><a href="/aritcle/{{ i.id }}">{{ i.title }}</a></h1>
+            <h1 class="uk-article-title"><a href="/article/{{ i.id }}">{{ i.title }}</a></h1>
             <p class="uk-article-meta">{{ i.create_time }} 发布者：{{ i.author }}</p>
             <img src="{{ i.cover }}">
             <p>{{ i.description }}</p>

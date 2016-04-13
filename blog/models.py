@@ -38,8 +38,8 @@ class ZoneSubject(models.Model):
 class Search_record(models.Model):
     title = models.CharField(max_length=100)
     url = models.CharField(max_length=100)
-    searchCount = models.IntegerField()
-    zhihu_type = models.IntegerField()
+    searchCount = models.IntegerField(blank=True)
+    zhihu_type = models.IntegerField(blank=True)
     def __unicode__(self):
         return self.title
 

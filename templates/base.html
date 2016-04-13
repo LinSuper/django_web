@@ -47,8 +47,30 @@
 
                     {% if index == 2 %}
                     <li class="uk-active"><a href="/zhihu">知乎看图</a></li>
+                    <li class="uk-parent" data-uk-dropdown>
+                        <a href="#">知乎看图</a>
+                        <ul class="uk-nav uk-nav-navbar uk-dropdown uk-dropdown-navbar">
+                            <li>
+                                <a href="/zhihu/question">问题</a>
+                            </li>
+                            <li>
+                                <a href="/zhihu/collection">收藏夹</a>
+                            </li>
+                        </ul>
+                    </li>
                     {% else %}
-                    <li><a href="/zhihu">知乎看图</a></li>
+                    <li class="uk-parent" data-uk-dropdown>
+                        <a href="#">知乎看图</a>
+                        <ul class="uk-nav uk-nav-navbar uk-dropdown uk-dropdown-navbar">
+                            <li>
+                                <a href="/zhihu/question">问题</a>
+                            </li>
+                            <li>
+                                <a href="/zhihu/collection">收藏夹</a>
+                            </li>
+                        </ul>
+                    </li>
+
                     {% endif %}
                     {% if index == 3 %}
                     <li class="uk-active"><a href="/zone">捡图</a></li>
@@ -82,7 +104,7 @@
 </div>
 <div id="offcanvas" class="uk-offcanvas">
           <div class="uk-offcanvas-bar">
-              <ul class="uk-nav uk-nav-offcanvas">
+              <ul class="uk-nav uk-nav-offcanvas uk-nav-parent-icon" data-uk-nav>
                   {% if index == 1 %}
                   <li class="uk-active">
                       <a href="/">首页</a>
@@ -103,11 +125,19 @@
                     {% endif %}
                   {% if index == 2 %}
                   <li class="uk-active">
-                      <a href="/zhihu">知乎看图</a>
+                      <a href="#">知乎看图</a>
+                      <ul class="uk-nav-sub">
+                          <li><a href="/zhihu/question">问题</a></li>
+                          <li><a href="/zhihu/collection">收藏夹</a></li>
+                      </ul>
                   </li>
                     {% else %}
-                  <li>
-                      <a href="/zhihu">知乎看图</a>
+                  <li class="uk-parent">
+                      <a href="#">知乎看图</a>
+                      <ul class="uk-nav-sub">
+                          <li><a href="/zhihu/question">问题</a></li>
+                          <li><a href="/zhihu/collection">收藏夹</a></li>
+                      </ul>
                   </li>
                     {% endif %}
                     {% if index == 3 %}
@@ -140,6 +170,7 @@
                 <ul class="uk-subnav uk-subnav-line uk-flex-center">
                     <li><a href="https://github.com/LinSuper">GitHub</a></li>
                     <li><a href="http://blog.superlin.cc">blog</a></li>
+                    <li>粤ICP备16030602号</li>
                 </ul>
             </div>
             <div align="center">
@@ -147,6 +178,15 @@
         </div>
         </div>
 </body>
+<script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?cfe232834849b14c6eff873a46298a7e";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+</script>
 {% block script %}
 {% endblock %}
 </html>

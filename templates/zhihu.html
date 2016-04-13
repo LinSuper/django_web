@@ -11,8 +11,8 @@
     <a onclick="insert_url();return;" class="uk-button">提交</a>
     </div>
       <p class="uk-text-large">知乎看图
-          <a href="/index/zone">新版块：捡图</a>
-          <a href="/index/search">关键词搜索</a>
+          <a href="/zone">新版块：捡图</a>
+          <a href="/search">关键词搜索</a>
       </p>
       <div class="uk-gird" data-uk-grid-margin>
         <ul class="uk-subnav uk-subnav-pill" data-uk-switcher="{connect:'#switcher-content'}">
@@ -31,7 +31,7 @@
                     <p>点击标题可以查看全部图片哟</p>
                 </div>
                     {% for i in question_data %}
-                        {% set index_1 = loop.index %}
+{#                        {% set index_1 = loop.index %}#}
                         <div class="uk-grid" data-uk-grid-margin>
                         <div class="uk-width-medium-1-1">
                         <p class="uk-text-large"><a href="{{ i.url }}" target="_blank">{{ i.title }}</a></p>
@@ -39,7 +39,7 @@
                         </div>
                         <div class="uk-grid" data-uk-grid-margin>
                         {% for j in i.image %}
-                            {% set index_2 = loop.index %}
+{#                            {% set index_2 = loop.index %}#}
                         <div class="uk-width-medium-1-5">
                             <img src="{{ j }}">
                         </div>
@@ -60,7 +60,7 @@
                 <div class="uk-width-medium-1-1">
                 <div class="uk-container uk-container-center" id="collection">
                     {% for i in collection_data %}
-                        {% set index_1 = loop.index %}
+{#                        {% set index_1 = loop.index %}#}
                         <div class="uk-grid" data-uk-grid-margin>
                         <div class="uk-width-medium-1-1">
                         <p class="uk-text-large"><a href="{{ i.url }}" target="_blank">{{ i.title }}</a></p>
@@ -68,7 +68,7 @@
                         </div>
                         <div class="uk-grid" data-uk-grid-margin>
                         {% for j in i.image %}
-                            {% set index_2 = loop.index %}
+{#                            {% set index_2 = loop.index %}#}
                         <div class="uk-width-medium-1-5">
                             <img src="{{ j }}">
                         </div>
@@ -183,13 +183,7 @@
 
         });
     }
-        var _hmt = _hmt || [];
-    (function() {
-      var hm = document.createElement("script");
-      hm.src = "//hm.baidu.com/hm.js?cfe232834849b14c6eff873a46298a7e";
-      var s = document.getElementsByTagName("script")[0];
-      s.parentNode.insertBefore(hm, s);
-    })();
+
 
     </script>
 {% endblock %}

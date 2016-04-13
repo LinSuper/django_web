@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block script_file %}
+<script src="http://files-10015041.file.myqcloud.com/static/src/js/components/pagination.js"></script>
+{% endblock %}
+{% block mid_content %}
+    <div class="uk-width-medium-1-1">
+      <p class="uk-text-large"><a href="{{ url }}">{{ title }}</a></p>
+      <div class="uk-gird" data-uk-grid-margin>
+          <div id="all_article_box">
+            {% for i in data %}
+                <article class="uk-article">
+                <p class="uk-article-meta">
+                    {% if i.author_url %}
+                    <a href="{{ i.answer_url }}">阅读原文</a> 回答者 <a href="{{ i.author_url }}">{{ i.author }}</a>
+                    {% else %}
+                    <a href="{{ i.answer_url }}">阅读原文</a> 回答者 <a href="#">{{ i.author }}</a>
+                    {% endif %}
+                </p>
+                {% for j in i.image %}
+                    <img src="http://ali.superlin.cc:9999/img/zhihu?url={{ j }}" class="uk-thumbnail-mini">
+                {% endfor %}
+                </article>
+            {% endfor %}
+            </div>
+      </div>
+    <ul class="uk-pagination" data-uk-pagination="{items:{{ item_count }}, itemsOnPage:5, currentPage:{{ current_page }}}"></ul>
+    </div>
+{% endblock %}
+{% block script %}
+    <script>
+            $('[data-uk-pagination]').on('select.uk.pagination', function(e, pageIndex){
+            window.location.href = '/zhihu/detail/{{ id }}/' + (pageIndex+1);
+            });
+    </script>
+{% endblock %}

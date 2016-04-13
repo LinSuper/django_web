@@ -26,13 +26,18 @@ urlpatterns = [
     url(r'^article/(.+)/$', blog_vies.article_page),
     url(r'^home/(.+)/$|^$', blog_vies.home),
     url(r'^give_me_tip/$', blog_vies.get_me_a_tip),
-    url(r'^zhihu/$|^zhihu/(.+)/$', blog_vies.article_page),
+    url(r'^zhihu/question/$|^zhihu/question/(.+)/$', blog_vies.zhihu_page),
+    url(r'^zhihu/collection/$|^zhihu/collection/(.+)/$', blog_vies.zhihu_page),
     url(r'^api/test/$', api_view.api_test),
     url(r'^zone/$|^zone/(.+)/$', blog_vies.zone_page),
     url(r'^img/sign$', api_view.sign),
     url(r'^api/upload_api$', api_view.upload_api),
     url(r'^img/zhihu$', api_view.return_zhihu_img),
-    url(r'^img/douban$', api_view.return_douban_img)
+    url(r'^img/douban$', api_view.return_douban_img),
+    url(r'^douban$|^douban/(.+)/$', blog_vies.douban_page),
+    url(r'^zhihu/detail/(.+)/(\d+)/$', blog_vies.zhihu_detail_page),
+    url(r'^zhihu/detail/(.+)/$', blog_vies.zhihu_detail_page),
+    url(r'^api/zhihu_spider$', api_view.insert_search)
 ]
 
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns

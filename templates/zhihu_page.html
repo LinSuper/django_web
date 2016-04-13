@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+{% block script_file %}
+     <script src="http://files-10015041.file.myqcloud.com/static/src/js/components/notify.js"></script>
+    <script src="http://files-10015041.file.myqcloud.com/static/src/js/components/pagination.js"></script>
+    <script src="http://f.919cp.com/cpf.php?445__1" charset="utf-8"></script>
+{% endblock %}
+{% block mid_content %}
+    <div class="uk-width-medium-1-1" xmlns="http://www.w3.org/1999/html">
+    <div class="uk-form">
+    <input type="text" placeholder="输入知乎问题或者收藏夹的完整链接" class="uk-form-width-large" id="insert_url">
+    <a onclick="insert_url();return;" class="uk-button">提交</a>
+    </div>
+      <p class="uk-text-large">知乎看图
+          <a href="/zone">新版块：捡图</a>
+          <a href="/search">关键词搜索</a>
+      </p>
+    {% for i in data %}
+        <div class="uk-grid" data-uk-grid-margin>
+        <div class="uk-width-medium-1-1">
+        {% if type == 1 %}
+        <p class="uk-text-large"><a href="/zhihu/detail/{{ i.id }}" target="_blank">{{ i.title }}</a></p>
+        {% else %}
+        <p class="uk-text-large"><a href="/zhihu/detail/{{ i.id }}" target="_blank">{{ i.title }}</a></p>
+        {% endif %}
+        </div>
+        </div>
+        <div class="uk-grid" data-uk-grid-margin>
+        {% for j in i.image %}
+        <div class="uk-width-medium-1-5">
+            <img src="http://ali.superlin.cc:9999/img/zhihu?url={{ j }}">
+        </div>
+        {% endfor %}
+        </div>
+    {% endfor %}
+    <ul class="uk-pagination" data-uk-pagination="{items:{{ item_count }}, itemsOnPage:5, currentPage:{{ current_page }}}"></ul>
+    </div>
+{% endblock %}
+
+{% block script %}
+    <script>
+    $('[data-uk-pagination]').on('select.uk.pagination', function(e, pageIndex){
+        {% if type == 1 %}
+            window.location.href = '/zhihu/question/' + (pageIndex+1);
+        {% else %}
+            window.location.href = '/zhihu/collection/' + (pageIndex+1);
+        {% endif %}
+            });
+    function insert_url(){
+        var url = $('#insert_url').val();
+        if(url.length==0){
+            return
+        }
+        $.ajax({
+            url: '/api/zhihu_spider?url='+url,
+            type: "GET",
+            success: function (data) {
+                UIkit.notify(data.message, {timeout: 1500});
+                $('#insert_url').val('');
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                UIkit.notify("服务器忙。。。", {timeout: 1500});
+            }
+
+        });
+    }
+    </script>
+{% endblock %}

@@ -1,7 +1,9 @@
 #coding:utf-8
 from django.shortcuts import render, HttpResponse
 import json, qcloud_cos
+from BeautifulSoup import BeautifulSoup
 from blog.models import Search_record
+import re, requests
 from config import (
     APP_ID,
     SecretID,
@@ -94,3 +96,25 @@ def return_douban_img(request):
         return_img = r.content
         mc.set(img_url, r.content, 60*60*24)
     return HttpResponse(return_img, content_type='image/jpeg')
+
+def insert_search(request):
+    url = request.GET.get('url', None)
+    if url:
+        if re.compile(r"(http|https)://www.zhihu.com/question/\d{8}").match(url) or \
+            re.compile(r"(http|https)://www.zhihu.com/collection/\d{8}").match(url) :
+            find_item = Search_record.objects.filter(url=url)
+            if len(find_item) == 0:
+                r = requests.get(url)
+                soup = BeautifulSoup(r.content)
+                title = soup.find('title').text
+                search_item = Search_record(
+                    title=title,
+                    url=url
+
+                )
+                search_item.save()
+                return JsonResponse(dict(stat=1, message=u'提交成功，系统正在抓取，请过一段时间再来查看'))
+            else:
+                return JsonResponse(dict(stat=0, message=u'该链接已存在！'))
+        else:
+            return JsonResponse(dict(stat=0, message=u'链接格式出错'))
