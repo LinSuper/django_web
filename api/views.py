@@ -70,7 +70,7 @@ def upload_api(request):
 
 def return_zhihu_img(request):
 
-    img_url = request.GET['url']
+    img_url = str(request.GET['url'])
     img_cache = mc.get(img_url)
     if img_cache:
         return_img = img_cache
@@ -84,7 +84,7 @@ def return_zhihu_img(request):
     return HttpResponse(return_img, content_type='image/jpeg')
 
 def return_douban_img(request):
-    img_url = request.GET['url']
+    img_url = str(request.GET['url'])
     img_cache = mc.get(img_url)
     if img_cache:
         return_img = img_cache
