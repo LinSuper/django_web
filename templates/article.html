@@ -1,4 +1,7 @@
 {% extends 'base.html' %}
+{% block script_file %}
+     <script src="http://files-10015041.file.myqcloud.com/static/src/js/components/notify.js"></script>
+{% endblock %}
 {% block mid_content %}
 <div class="tm-main uk-width-medium-4-5">
     <article class="uk-article">
@@ -8,6 +11,58 @@
         <button class="uk-button" data-uk-toggle="{target:'#hide_content', animation:'uk-animation-slide-left, uk-animation-slide-bottom'}">显示隐藏内容</button>
         <div id="hide_content" class="uk-panel uk-panel-box uk-hidden" aria-hidden="true">{{ article.hide_content|safe }}</div>
     </article>
+    <div class="bdsharebuttonbox"><a href="#" class="bds_more" data-cmd="more"></a><a href="#" class="bds_qzone" data-cmd="qzone" title="分享到QQ空间"></a><a href="#" class="bds_tsina" data-cmd="tsina" title="分享到新浪微博"></a><a href="#" class="bds_tqq" data-cmd="tqq" title="分享到腾讯微博"></a><a href="#" class="bds_renren" data-cmd="renren" title="分享到人人网"></a><a href="#" class="bds_weixin" data-cmd="weixin" title="分享到微信"></a></div>
+<script>window._bd_share_config={"common":{"bdSnsKey":{},"bdText":"","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"0","bdSize":"16"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];</script>
+<h3>评论({{ comments|length }})：</h3>
+<ul class="uk-comment-list">
+{% for comment in comments %}
+    <li>
+        <article class="uk-comment">
+            <header class="uk-comment-header">
+                <h4 class="uk-comment-title">{{ comment.username }}</h4>
+                <p class="uk-comment-meta">{{ comment.create_time }}</p>
+            </header>
+            <div class="uk-comment-body">{{ comment.content }}</div>
+        </article>
+    </li>
+{% endfor %}
+</ul>
+{% if request.user.id %}
+    <textarea class="uk-width-1-1" id="comment" cols="100" rows="5" placeholder="在这里发表评论"></textarea>
+    <button class="uk-button" onclick="push_comment();return;">发表评论</button>
+{% else %}
+    <textarea class="uk-width-1-1" id="comment" cols="100" rows="5" placeholder="在这里发表评论" disabled="True"></textarea>
+    <button class="uk-button" onclick="login();return;">请先登录</button>
+{% endif %}
 </div>
 
+{% endblock %}
+
+{% block script %}
+<script>
+    function push_comment(){
+        var content = $('#comment').val();
+        if (content.length==0){
+            UIkit.notify("评论不能为空！", {timeout: 1000});
+            return;
+        }
+        $.ajax({
+                url: '/api/comment/add?article_id={{ article.id }}',
+                type: 'POST',
+                data: {'content': content, 'csrfmiddlewaretoken':'{{ csrf_token }}' },
+                success: function (data){
+                    UIkit.notify(data.msg, {timeout: 2000});
+                    if(data.stat==1){
+                        window.location.href='{{ request.path }}';
+                    }
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    alert('服务器忙，请重试！' + errorThrown);
+                }
+            })
+    }
+    function login(){
+        window.location.href = '{% url 'login'%}?next={{ request.path }}';
+    }
+</script>
 {% endblock %}

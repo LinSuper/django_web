@@ -5,13 +5,15 @@ from blog.models import (
     ZoneSubject,
     DoubanTopic,
     ZhihuSubject,
-    Search_record
+    Search_record,
+    Comment
 )
+from django.contrib.auth.models import User
 # Create your views here.
 
 
 def home(request, page=None):
-    if request.get_host() in ['www.superlin.cc', 'www.yz5a.com', 'kantu.superlin.cc']:
+    if request.get_host() != 'www.kantujun.com':
         return HttpResponsePermanentRedirect('http://www.kantujun.com')
     if page is None:
         page = 1
@@ -33,7 +35,10 @@ def home(request, page=None):
             'author': i.author,
             'id': i.id
         })
-    return render(request, 'index.html', {'index': 1, 'data': data, 'current_page': page, 'item_count': item_count})
+    return render(request, 'index.html', {
+        'index': 1, 'data': data, 'current_page': page, 'item_count': item_count,
+        'title': u'豆瓣妹子福利 － 知乎福利'
+    })
 
 
 def article_page(request, parm):
@@ -43,12 +48,27 @@ def article_page(request, parm):
         find_article = None
     if find_article:
         article = {
+            'id': find_article.id,
             'title': find_article.title,
             'create_time': find_article.create_time,
             'content': find_article.content,
             'hide_content': find_article.hide_content
         }
-        return render(request, "article.html", {'index': 1, 'article': article, 'title': find_article.title})
+        article_comment = find_article.article_comment.all()
+        comments = []
+        comments_user_id = [i.user_id for i in article_comment]
+        find_user = User.objects.filter(id__in=comments_user_id).all()
+        user_dict = {str(i.id): i.username for i in find_user}
+        for i in article_comment:
+            comments.append({
+                'username': user_dict[i.user_id],
+                'content': i.content,
+                'create_time': i.create_time
+            })
+
+        return render(request, "article.html",{
+            'index': 1, 'article': article, 'title': find_article.title, 'comments':comments
+        })
     else:
         raise Http404(u"非法路径！！！")
 
@@ -95,6 +115,9 @@ def douban_page(request, page=None):
     for n, i in enumerate(find_douban):
         if n % 4 == 0:
             data.append([])
+        if i.topic_image.count()==0:
+            i.delete()
+            continue
         image_url = i.topic_image.first()
         data[-1].append({
             'author_url': i.author_url,
@@ -152,6 +175,9 @@ def zhihu_detail_page(request, d_id, page=None):
         start = 0
         end = 5
     find_subject = ZhihuSubject.objects.filter(id=d_id)[0]
+    find_search_item = Search_record.objects.filter(url=find_subject.url)[0]
+    find_search_item.searchCount += 1
+    find_search_item.save()
     type = find_subject.zhihu_type
     title = find_subject.title
     url = find_subject.url

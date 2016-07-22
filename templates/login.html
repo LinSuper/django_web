@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+<head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>看图君－登录</title>
+{#        <link rel="shortcut icon" href="images/favicon.ico" type="image/x-icon">#}
+{#        <link rel="apple-touc h-icon-precomposed" href="images/apple-touch-icon.png">#}
+        <link rel="stylesheet" href="http://files-10015041.file.myqcloud.com/static/src/css/uikit.gradient.css">
+        <script src="http://files-10015041.file.myqcloud.com/static/src/js/jquery.js"></script>
+        <script src="http://files-10015041.file.myqcloud.com/static/src/js/uikit.js"></script>
+        <script src="http://www.getuikit.net/src/js/components/notify.js"></script>
+        <link id="data-uikit-theme" rel="stylesheet" href="http://files-10015041.file.myqcloud.com/static/src/css/uikit.docs.min.css">
+        <link rel="stylesheet" href="http://files-10015041.file.myqcloud.com/static/src/css/my_uikit.css">
+    </head>
+<body class="uk-height-1-1">
+<br>
+<br>
+<div class="uk-text-center uk-align-center" style="width: 250px;">
+	<div class="uk-panel uk-panel-box uk-form">
+	<h3>看图君</h3>
+	<fieldset data-uk-margin>
+		<div class="uk-form-row">
+		<input type="text" placeholder="用户名" id="username">
+		</div>
+		<div class="uk-form-row">
+		<input type="password" placeholder="密码" id="pwd">
+		</div>
+		<div class="uk-form-row">
+		<button class="uk-button" onclick="login()">登录</button>
+		</div>
+	</fieldset>
+	</div>
+	<div class="uk-form-row uk-text-small">
+		<a class="uk-link" href="/accounts/register">注册</a>&nbsp&nbsp&nbsp
+		<a class="uk-link" href="/accounts/forget">忘记密码</a>
+	</div>
+</div>
+</body>
+<script>
+	function login(){
+
+	            username = $("#username").val();
+	            pwd = $("#pwd").val();
+	            if( !username || !pwd ) {
+	                alert("请输入用户名或密码。");
+	                return;
+	            }
+                else{
+                    $.ajax({
+                            url: window.location.href,
+                            type: 'POST',
+                            data: {'username': username, 'password': pwd, 'csrfmiddlewaretoken':'{{ csrf_token }}' },
+                            success: function (data){
+                                UIkit.notify(data.msg, {timeout: 2000});
+                                if(data.stat==1){
+                                    window.location.href=data.url;
+                                }
+                            },
+                            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                                alert('服务器忙，请重试！' + errorThrown);
+                            }
+                        })
+	             	}
+		
+            }
+
+</script>
+</html>

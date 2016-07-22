@@ -19,8 +19,6 @@ from blog import views  as blog_vies
 from api import views as api_view
 
 
-
-
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^article/(.+)/$', blog_vies.article_page),
@@ -28,7 +26,6 @@ urlpatterns = [
     url(r'^give_me_tip/$', blog_vies.get_me_a_tip),
     url(r'^zhihu/question/$|^zhihu/question/(.+)/$', blog_vies.zhihu_page),
     url(r'^zhihu/collection/$|^zhihu/collection/(.+)/$', blog_vies.zhihu_page),
-    url(r'^api/test/$', api_view.api_test),
     url(r'^zone/$|^zone/(.+)/$', blog_vies.zone_page),
     url(r'^img/sign$', api_view.sign),
     url(r'^api/upload_api$', api_view.upload_api),
@@ -37,7 +34,12 @@ urlpatterns = [
     url(r'^douban$|^douban/(.+)/$', blog_vies.douban_page),
     url(r'^zhihu/detail/(.+)/(\d+)/$', blog_vies.zhihu_detail_page),
     url(r'^zhihu/detail/(.+)/$', blog_vies.zhihu_detail_page),
-    url(r'^api/zhihu_spider$', api_view.insert_search)
+    url(r'^api/zhihu_spider$', api_view.insert_search),
+    url(r'^robots.txt$', api_view.test),
+    url(r'^accounts/login/$', api_view.login, name='login'),
+    url(r'^accounts/register$', api_view.resister),
+    url(r'^api/comment/add$', api_view.push_comment),
+    url(r'^accounts/logout', api_view.logout)
 ]
 
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns

@@ -7,9 +7,9 @@ from django.utils import timezone
 
 
 class Article(models.Model):
-    title = models.CharField(max_length=15)
+    title = models.CharField(max_length=200)
     author = models.CharField(max_length=100, default='admin')
-    content = models.TextField(max_length=1000)
+    content = models.TextField(max_length=5000)
     hide_content = models.TextField(max_length=1000, default='', blank=True)
     create_time = models.DateTimeField(auto_now_add=True)
     visible = models.BooleanField(default=True)
@@ -23,12 +23,13 @@ class Comment(models.Model):
     article = models.ForeignKey(Article, related_name='article_comment')
     content = models.TextField(max_length=1000, default='')
     create_time = models.DateTimeField(auto_now_add=True)
+    user_id = models.CharField(max_length=100, blank=False)
     def __unicode__(self):
         return self.content
 
 
 class ZoneSubject(models.Model):
-    title = models.CharField(max_length=20, default='')
+    title = models.CharField(max_length=20, default='', blank=True)
     image_url = models.CharField(max_length=500)
     create_time = models.DateTimeField(default=timezone.now)
     def __unicode__(self):
@@ -39,7 +40,7 @@ class Search_record(models.Model):
     title = models.CharField(max_length=100)
     url = models.CharField(max_length=100)
     searchCount = models.IntegerField(blank=True)
-    zhihu_type = models.IntegerField(blank=True)
+    zhihu_type = models.IntegerField(blank=True, null=True)
     def __unicode__(self):
         return self.title
 

@@ -1,10 +1,11 @@
 <!DOCTYPE html>
 <html lang="en-gb" dir="ltr" xmlns="http://www.w3.org/1999/html">
 <head>
+<meta name="domain_verify" content="pmrgi33nmfuw4ir2ejvwc3tuovvhk3romnxw2irmejtxk2leei5ceolegy4tsnzsga2wcyztgqytinjzmzsgemjvgaytamtegfsdsntdeiwce5djnvsvgylwmurdumjugyytenbrgi4tmmjrgv6q">
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="keywords" content="知乎福利,豆瓣福利,妹子,爆照" />
-  <meta name="description" content="知乎福利,豆瓣福利,妹子,爆照" />
+  <meta name="keywords" content="知乎福利,豆瓣福利,妹子,爆照,豆瓣妹子美女" />
+  <meta name="description" content="知乎福利,豆瓣福利,妹子,爆照,豆瓣妹子美女都在这里！！！" />
     {% if title %}
     <title>{{ title }} －看图君</title>
     {% else %}
@@ -15,7 +16,18 @@
   <script src="http://files-10015041.file.myqcloud.com/static/src/js/jquery.js"></script>
   <script src="http://files-10015041.file.myqcloud.com/static/src/js/uikit.js"></script>
 
-    <script>
+    {% block script_file %}
+    {% endblock %}
+<script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?11770adaceabefad675a15b58b1cc3cb";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+    </script>
+<script>
 (function(){
     var bp = document.createElement('script');
     bp.src = '//push.zhanzhang.baidu.com/push.js';
@@ -23,8 +35,14 @@
     s.parentNode.insertBefore(bp, s);
 })();
 </script>
-    {% block script_file %}
-    {% endblock %}
+<script src="http://f.919cp.com/cpf.php?445__1" charset="utf-8"></script>
+{#<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>#}
+{#<script>#}
+{#  (adsbygoogle = window.adsbygoogle || []).push({#}
+{#    google_ad_client: "ca-pub-5673866312642362",#}
+{#    enable_page_level_ads: true#}
+{#  });#}
+{#</script>#}
 </head>
 
 <body class="tm-background">
@@ -81,6 +99,11 @@
                     <li class="uk-active"><a href="/give_me_tip">打赏我</a></li>
                     {% else %}
                     <li><a href="/give_me_tip">打赏我</a></li>
+                    {% endif %}
+                    {% if request.user.id %}
+                        <li><a href="/accounts/logout">登出</a></li>
+                    {% else %}
+                        <li><a href="/accounts/login">登录</a></li>
                     {% endif %}
                 </ul>
 
@@ -158,18 +181,42 @@
                       <a href="/give_me_tip">打赏我</a>
                   </li>
                     {% endif %}
+                    {% if request.user.id %}
+                        <li><a href="/accounts/logout">登出</a></li>
+                    {% else %}
+                        <li><a href="/accounts/login">登录</a></li>
+                    {% endif %}
 {#                    <li>#}
 {#                      <a href="/logout">登出</a>#}
 {#                  </li>#}
               </ul>
           </div>
 </div>
+  <div align="center">
+<script type="text/javascript">
+var sogou_ad_id=579007;
+var sogou_ad_height=90;
+var sogou_ad_width=728;
+</script>
+<script type='text/javascript' src='http://images.sohu.com/cs/jsfile/js/c.js'></script>
+  </div>
+{#  <div align="center">#}
+{#      <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>#}
+{#    <!-- my -->#}
+{#    <ins class="adsbygoogle"#}
+{#         style="display:inline-block;width:300px;height:250px"#}
+{#         data-ad-client="ca-pub-5673866312642362"#}
+{#         data-ad-slot="3168356938"></ins>#}
+{#    <script>#}
+{#    (adsbygoogle = window.adsbygoogle || []).push({});#}
+{#    </script>#}
+{#  </div>#}
 <div class="tm-footer">
             <div class="uk-container uk-container-center uk-text-center">
 
                 <ul class="uk-subnav uk-subnav-line uk-flex-center">
                     <li><a href="https://github.com/LinSuper">GitHub</a></li>
-                    <li><a href="http://blog.superlin.cc">blog</a></li>
+                    <li><a href="http://blog.kantujun.com">blog</a></li>
                     <li>粤ICP备16030602号</li>
                 </ul>
             </div>
@@ -178,16 +225,8 @@
         </div>
         </div>
 </body>
-<script>
-    var _hmt = _hmt || [];
-    (function() {
-      var hm = document.createElement("script");
-      hm.src = "//hm.baidu.com/hm.js?cfe232834849b14c6eff873a46298a7e";
-      var s = document.getElementsByTagName("script")[0];
-      s.parentNode.insertBefore(hm, s);
-    })();
-</script>
 {% block script %}
+
 {% endblock %}
 </html>
 

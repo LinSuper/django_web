@@ -25,7 +25,7 @@ class ZoneAdmin(admin.ModelAdmin):
     list_display = ('create_time', 'title', 'image_url')
 
 class SeachRecordAdmin(admin.ModelAdmin):
-    list_display = ['title', 'url', 'searchCount']
+    list_display = ['title', 'url', 'searchCount', 'zhihu_type']
 
 class DoubanImageInline(admin.TabularInline):
     model = DoubanImage

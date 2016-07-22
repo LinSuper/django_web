@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+<head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>看图君－注册</title>
+        <link rel="shortcut icon" href="images/favicon.ico" type="image/x-icon">
+        <link rel="apple-touc h-icon-precomposed" href="images/apple-touch-icon.png">
+        <link rel="stylesheet" href="http://files-10015041.file.myqcloud.com/static/src/css/uikit.gradient.css">
+        <script src="http://files-10015041.file.myqcloud.com/static/src/js/jquery.js"></script>
+        <script src="http://files-10015041.file.myqcloud.com/static/src/js/uikit.js"></script>
+        <script src="http://www.getuikit.net/src/js/components/notify.js"></script>
+        <script src="http://www.getuikit.net/src/js/components/pagination.js"></script>
+        <link id="data-uikit-theme" rel="stylesheet" href="http://files-10015041.file.myqcloud.com/static/src/css/uikit.docs.min.css">
+        <link rel="stylesheet" href="http://files-10015041.file.myqcloud.com/static/src/css/my_uikit.css">
+        <script src="http://www.getuikit.net/src/js/components/notify.js"></script>
+    </head>
+<body class="uk-height-1-1">
+<br>
+<br>
+<div class="uk-text-center uk-align-center" style="width: 250px;">
+	<div class="uk-panel uk-panel-box uk-form">
+	<h3>看图君</h3>
+	<fieldset data-uk-margin>
+		<div class="uk-form-row">
+		<input type="text" placeholder="邮箱" onBlur="searchName()" id="email">
+		</div>
+        <div class="uk-form-row">
+            <input type="text" placeholder="用户名" id="username">
+        </div>
+		<div class="uk-form-row">
+		<input type="password" placeholder="密码" id="pwd1">
+		</div>
+		<div class="uk-form-row">
+		<input type="password" placeholder="确认密码" id="pwd2">
+		</div>
+
+		<div class="uk-form-row">
+		<button class="uk-button" onclick="register()">注册</button>
+		</div>
+	</fieldset>
+	</div>
+	<div class="uk-form-row uk-text-small">
+		&nbsp<a class="uk-link" href="/accounts/login">登录</a>
+	</div>
+</div>
+</body>
+<script>
+	function searchName(){
+		email=$("#email").val();
+		var re=new RegExp(/^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/);
+		if (!re.test(email)){
+			UIkit.notify("邮箱格式错误",{timeout:1000});
+			$("#email").val('');
+			return;
+		}
+
+		/*$.get("/index/search?email="+email,
+		function(data,status){
+			if(status=='success'){
+				if(data.state==1){
+					UIkit.notify("用户名已存在",{timeout:1000});
+					$("#email").val('');
+					return;
+				}
+			}
+		});*/
+		
+	}
+	function register() {
+        phone = $("#email").val();
+        username = $('#username').val();
+        pwd1 = $("#pwd1").val();
+        pwd2 = $("#pwd2").val();
+
+        if (pwd1 != pwd2) {
+            UIkit.notify("两次输入的密码不一致", {timeout: 1000});
+            $("#pwd1").val('');
+            $("#pwd2").val('');
+            return;
+        }
+        if (pwd1.length < 6) {
+            UIkit.notify("密码必须多于6个字符", {timeout: 1000});
+            $("#pwd1").val('');
+            $("#pwd2").val('');
+            return;
+        }
+        if (username.length == 0) {
+            UIkit.notify("用户名不能为空", {timeout: 1000})
+            $('#username').val('');
+            return;
+        }
+        else {
+            var data = {
+                'email': email, 'username': username, 'password': pwd1
+            };
+            $.ajax({
+                    url: '/accounts/register',
+                    type: 'POST',
+                    data: {'email': email, 'username': username, 'password': pwd1, 'csrfmiddlewaretoken':'{{ csrf_token }}' },
+                    success: function (data){
+                        if (data.stat == 1) {
+                                UIkit.notify("注册成功", {timeout: 1000});
+                                setTimeout(jump, 1500);
+                            }
+                            else {
+                                UIkit.notify(data.msg, {timeout: 1000});
+
+                            }
+                    },
+                    error: function (XMLHttpRequest, textStatus, errorThrown) {
+                        alert('服务器忙，请重试！' + errorThrown);
+                    }
+                });
+        }
+    }
+
+	function jump(){
+		window.location.href ="/accounts/login";
+            }
+
+</script>
+</html>
