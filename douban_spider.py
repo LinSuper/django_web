@@ -19,8 +19,8 @@ from blog.models import DoubanImage, DoubanTopic
 
 discussion_dict = {
     'meituikong': 'https://www.douban.com/group/meituikong',
-    '510760': 'https://www.douban.com/group/510760', #96
-    '516876':'https://www.douban.com/group/516876',
+    #'510760': 'https://www.douban.com/group/510760', #96
+    #'516876':'https://www.douban.com/group/516876',
     'haixiuzu':'https://www.douban.com/group/haixiuzu/' #36
 }
 
